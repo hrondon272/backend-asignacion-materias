@@ -3,10 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\LoginController;
-// use App\Http\Controllers\api\AsignaturaController;
-// use App\Http\Controllers\api\EstudianteController;
-// use App\Http\Controllers\api\ProfesorController;
-// use App\Http\Controllers\api\AsignacionController;
+use App\Http\Controllers\api\AsignaturaController;
+use App\Http\Controllers\api\EstudianteController;
+use App\Http\Controllers\api\ProfesorController;
+use App\Http\Controllers\api\AsignacionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,9 +32,9 @@ Route::get('login', [LoginController::class, 'index'])->name('login');
 Route::middleware(['auth:sanctum'])->group(function () {
 
     // Obtener información
-    // Route::resource('estudiante', EstudianteController::class);
-    // Route::resource('profesore', ProfesorController::class);
-    // Route::resource('asignatura', AsignaturaController::class);
-    // Route::resource('asignacion', AsignacionController::class);
+    Route::resource('estudiante', EstudianteController::class);
+    Route::resource('profesore', ProfesorController::class);
+    Route::resource('asignatura', AsignaturaController::class);
+    Route::resource('asignacion', AsignacionController::class);
     Route::post('userLogout', [LoginController::class, 'logout']);
 });
