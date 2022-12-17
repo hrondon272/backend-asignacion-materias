@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('direccion');
             $table->string('ciudad');
             $table->integer('semestre');
+            $table->integer('creditos_acumulados')->default(0);
             $table->timestamps();
         });
     }

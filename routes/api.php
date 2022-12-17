@@ -33,8 +33,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Obtener información
     Route::resource('estudiante', EstudianteController::class);
-    Route::resource('profesore', ProfesorController::class);
+    Route::resource('profesor', ProfesorController::class);
     Route::resource('asignatura', AsignaturaController::class);
-    Route::resource('asignacion', AsignacionController::class);
     Route::post('userLogout', [LoginController::class, 'logout']);
+
+    Route::get('asignacion/{id}', [AsignacionController::class, 'index']);
+    Route::post('asignacion/{id}', [AsignacionController::class, 'assign']);
+    Route::put('asignacion/{id}', [AsignacionController::class, 'update']);
+    Route::delete('asignacion/{id}', [AsignacionController::class, 'destroy']);
 });

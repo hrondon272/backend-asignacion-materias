@@ -4,6 +4,9 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
+use App\Models\Estudiante;
+use DB;
 
 class EstudianteController extends Controller
 {
@@ -14,7 +17,12 @@ class EstudianteController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $estudiantes = Estudiante::get();
+            echo json_encode(['response' => $estudiantes]);
+        } catch (Exception $e) {
+            echo json_encode(['response' => $e->getMessage()]);
+        }
     }
 
     public function create()
@@ -24,73 +32,82 @@ class EstudianteController extends Controller
 
     public function store(Request $request)
     {
-        $dataPersonalProfesional = $request->all();
-        $nombre = $dataPersonalProfesional["nombre"];
-        $apellido = $dataPersonalProfesional["apellido"];
-        $cedula = $dataPersonalProfesional["cedula"];
-        $fecha_nacimiento = $dataPersonalProfesional["fecha_nacimiento"];
-        $profesion = $dataPersonalProfesional["profesion"];
-        $direccion = $dataPersonalProfesional["direccion"];
-        $municipio = $dataPersonalProfesional["municipio"];
-        $telefono = $dataPersonalProfesional["telefono"];
-        $sexo = $dataPersonalProfesional["sexo"];
-        $nombre_vehiculo = $dataPersonalProfesional["nombre_vehiculo"];
-        $marca = $dataPersonalProfesional["marca"];
-        $anio = $dataPersonalProfesional["año"];
-
-        $fecha_nacimiento = date('Y-m-d H:i:s', strtotime($fecha_nacimiento));
-
-        $dataProfesion = DB::select('select id from profesion where nombre = ?', [$profesion]);
-        $idProfesion = $dataProfesion[0]->id;
-
-        $dataVehiculo = DB::select('select id from vehiculo where nombre = ? and marca = ? and anio = ?', [$nombre_vehiculo, $marca, $anio]);
-        $idVehiculo = $dataVehiculo[0]->id;
-
         try {
-            $idNuevoUsuario = DB::table('users')->insertGetId([
-                'nombre' => $nombre,
-                'apellido' => $apellido,
-                'cedula' => $cedula,
-                'fecha_nacimiento' => $fecha_nacimiento,
-                'direccion' => $direccion,
-                'municipio' => $municipio,
-                'telefono' => $telefono,
-                'sexo' => $sexo,
-                'created_at' => now()
-            ]);
-    
-            DB::table('usuario_profesion')->insert([
-                'user_id' => $idNuevoUsuario,
-                'profesion_id' => $idProfesion,
-            ]);
-            
-            DB::table('usuario_vehiculo')->insert([
-                'user_id' => $idNuevoUsuario,
-                'vehiculo_id' => $idVehiculo
-            ]);
-            echo json_encode(['response' => true]);
+            $dataEstudiante = $request->all();
+
+            // Se verifica que no existan estudiantes con los mismos documentos o email
+            if (!DB::table('estudiante')->where('documento', $dataEstudiante['documento'])->exists()) {
+                if (!DB::table('estudiante')->where('email', $dataEstudiante['email'])->exists()) {
+                    $estudiante = new Estudiante;
+                    $estudiante->documento = $dataEstudiante['documento'];
+                    $estudiante->nombres = $dataEstudiante['nombres'];
+                    $estudiante->telefono = $dataEstudiante['telefono'];
+                    $estudiante->email = $dataEstudiante['email'];
+                    $estudiante->direccion = $dataEstudiante['direccion'];
+                    $estudiante->ciudad = $dataEstudiante['ciudad'];
+                    $estudiante->semestre = $dataEstudiante['semestre'];
+                    $estudiante->creditos_acumulados = $dataEstudiante['creditos_acumulados'];
+                    $estudiante->created_at = now();
+                    $insercion = $estudiante->save();
+                }else{
+                    $insercion = "Ya existe un estudiante con este email";
+                }
+            }else{
+                $insercion = "Ya existe un estudiante con este documento";
+            }
+            echo json_encode(['response' => $insercion]);
+        } catch (QueryException $e) {
+            echo json_encode(['response' => $e->getMessage()]);
+        }
+    }
+
+    public function show(Estudiante $estudiante)
+    {
+        //
+    }
+
+    public function edit(Estudiante $estudiante)
+    {
+        //
+    }
+
+    public function update(Request $request, $idEstudiante)
+    {
+        try {
+            $nuevaInfoEstudiante = $request->all();
+            $estudiante = Estudiante::find($idEstudiante);
+
+            if (!DB::table('estudiante')->where('id', '<>', $idEstudiante)->where('documento', $nuevaInfoEstudiante['documento'])->exists()) {
+                if (!DB::table('estudiante')->where('id', '<>', $idEstudiante)->where('email', $nuevaInfoEstudiante['email'])->orWhere('documento', $nuevaInfoEstudiante['documento'])->exists()) {
+                    $estudiante->documento = $nuevaInfoEstudiante['documento'];
+                    $estudiante->nombres = $nuevaInfoEstudiante['nombres'];
+                    $estudiante->telefono = $nuevaInfoEstudiante['telefono'];
+                    $estudiante->email = $nuevaInfoEstudiante['email'];
+                    $estudiante->direccion = $nuevaInfoEstudiante['direccion'];
+                    $estudiante->ciudad = $nuevaInfoEstudiante['ciudad'];
+                    $estudiante->semestre = $nuevaInfoEstudiante['semestre'];
+                    $estudiante->creditos_acumulados = $nuevaInfoEstudiante['creditos_acumulados'];
+                    $estudiante->updated_at = now();
+                    $actualizacion = $estudiante->update();
+                }else{
+                    $actualizacion = "Ya existe un estudiante con este email";
+                }
+            }else{
+                $actualizacion = "Ya existe un estudiante con este documento";
+            }
+            echo json_encode(['response' => $actualizacion]);
         } catch (Exception $e) {
             echo json_encode(['response' => $e->getMessage()]);
         }
     }
 
-    public function show(prueba $prueba)
+    public function destroy($idEstudiante)
     {
-        //
-    }
-
-    public function edit(prueba $prueba)
-    {
-        //
-    }
-
-    public function update(Request $request, prueba $prueba)
-    {
-        //
-    }
-
-    public function destroy(prueba $prueba)
-    {
-        //
+        try {
+            $response = estudiante::destroy($idEstudiante);
+            echo json_encode(['response' => $response]);
+        } catch (Exception $e) {
+            echo json_encode(['response' => $e->getMessage()]);
+        }
     }
 }
