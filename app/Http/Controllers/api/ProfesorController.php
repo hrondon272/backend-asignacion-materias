@@ -23,6 +23,26 @@ class ProfesorController extends Controller
             echo json_encode(['response' => $e->getMessage()]);
         }
     }
+    
+    public function getProfesoresPorAsignatura($idAsignatura)
+    {
+        try {
+            $profesores = DB::select('SELECT p.id, p.nombres FROM asignatura a INNER JOIN asignacion_profesor ap ON a.id = ap.asignatura_id INNER JOIN profesor p ON ap.profesor_id = p.id WHERE a.id = ?', [$idAsignatura]);
+            echo json_encode(['response' => $profesores]);
+        } catch (Exception $e) {
+            echo json_encode(['response' => $e->getMessage()]);
+        }
+    }
+    
+    public function getAsignaturasPorProfesor($idProfesor)
+    {
+        try {
+            $asignaturas = DB::select('SELECT ap.id, a.nombre, a.creditos FROM asignatura a INNER JOIN asignacion_profesor ap ON a.id = ap.asignatura_id INNER JOIN profesor p ON ap.profesor_id = p.id WHERE p.id = ?', [$idProfesor]);
+            echo json_encode(['response' => $asignaturas]);
+        } catch (Exception $e) {
+            echo json_encode(['response' => $e->getMessage()]);
+        }
+    }
 
     public function create()
     {

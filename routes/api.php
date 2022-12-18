@@ -34,6 +34,7 @@ Route::get('login', [LoginController::class, 'index'])->name('login');
 //     // Obtener información
 //     Route::resource('estudiante', EstudianteController::class);
 //     Route::resource('profesor', ProfesorController::class);
+//     Route::get('profesoresPorAsignatura/{idAsignatura}', [ProfesorController::class, 'getProfesoresPorAsignatura']);
 //     Route::resource('asignatura', AsignaturaController::class);
 //     Route::post('userLogout', [LoginController::class, 'logout']);
 
@@ -45,6 +46,8 @@ Route::get('login', [LoginController::class, 'index'])->name('login');
 
 Route::resource('estudiante', EstudianteController::class);
 Route::resource('profesor', ProfesorController::class);
+Route::get('profesoresPorAsignatura/{idAsignatura}', [ProfesorController::class, 'getProfesoresPorAsignatura']);
+Route::get('asignaturasPorProfesor/{idProfesor}', [ProfesorController::class, 'getAsignaturasPorProfesor']);
 Route::resource('asignatura', AsignaturaController::class);
 Route::post('userLogout', [LoginController::class, 'logout']);
 

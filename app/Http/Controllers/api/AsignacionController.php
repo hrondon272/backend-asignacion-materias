@@ -17,7 +17,7 @@ class AsignacionController extends Controller
     public function index($idEstudiante)
     {
         try {
-            $asignaciones = DB::select('SELECT e.nombres AS "estudiante", a.nombre AS "asignatura", a.creditos, p.nombres AS "profesor"
+            $asignaciones = DB::select('SELECT ae.id, e.nombres AS "estudiante", a.nombre AS "asignatura", a.creditos, p.nombres AS "profesor"
                                         FROM asignatura a 
                                             INNER JOIN asignacion_estudiante ae ON a.id = ae.asignatura_id 
                                             INNER JOIN profesor p ON ae.profesor_id = p.id 
@@ -45,7 +45,7 @@ class AsignacionController extends Controller
                         "profesor_id" => $idProfesor
                     ]);
                 }else{
-                    $asignacion = "El profesor ya fue asignado a esta asignatura anteriormente";
+                    $asignacion = "El profesor ya fue asignado a esta materia";
                 }
             }else if($ind == 2){ // Para asignar estudiantes
                 $idEstudiante = $dataAsignatura["estudiante_id"];
@@ -65,7 +65,7 @@ class AsignacionController extends Controller
                         $asignacion = "Créditos insuficientes";
                     }
                 }else{
-                    $asignacion = "El estudiante ya fue asignado a esta asignatura anteriormente";
+                    $asignacion = "El estudiante ya fue asignado a esta materia";
                 }
             }
             echo json_encode(['response' => $asignacion]);
@@ -112,22 +112,15 @@ class AsignacionController extends Controller
     {
         try {
             $data = $request->all();
-            $idAsignacion = $data["asignatura_id"];
-            $idProfesor = $data["profesor_id"];     
+            $idAsignacion = $data["idAsignacion"];
             
-            if ($ind == 1) { // Para cambiar asignaturas de un profesor   
+            if ($ind == 1) { // Para eliminar asignaturas de un profesor   
                 $eliminacion = DB::table('asignacion_profesor')
-                                    ->where('asignatura_id', $idAsignacion)
-                                    ->where('profesor_id', $idProfesor)
+                                    ->where('id', $idAsignacion)
                                     ->delete();
-            }else if($ind == 2){ // Para modificar estudiantes asignados
-                $idEstudiante = $data["estudiante_id"];
-                
-                // Lo único que puede cambiar para el estudiante es el profesor que le enseña determinada materia
+            }else if($ind == 2){ // Para eliminar estudiantes con materias asignadas
                 $eliminacion = DB::table('asignacion_estudiante')
-                                    ->where('asignatura_id', $idAsignacion)
-                                    ->where('profesor_id', $idProfesor)
-                                    ->where('estudiante_id', $idEstudiante)
+                                    ->where('id', $idAsignacion)
                                     ->delete();
             }
             echo json_encode(['response' => $eliminacion]);

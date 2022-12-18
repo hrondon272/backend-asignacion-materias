@@ -37,7 +37,7 @@ class AsignaturaController extends Controller
             $asignatura->descripcion = $dataAsignatura['descripcion'];
             $asignatura->creditos = $dataAsignatura['creditos'];
             $asignatura->area = $dataAsignatura['area'];
-            $asignatura->obligatoria = $dataAsignatura['obligatoria'];
+            $asignatura->obligatoria = $dataAsignatura['obligatoria'] == '' ? false : true;
             $asignatura->created_at = now();
             $insercion = $asignatura->save();
             echo json_encode(['response' => $insercion]);
