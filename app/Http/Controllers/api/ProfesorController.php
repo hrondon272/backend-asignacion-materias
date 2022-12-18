@@ -57,9 +57,14 @@ class ProfesorController extends Controller
         }
     }
 
-    public function show(Profesor $profesor)
+    public function show($profesorId)
     {
-        //
+        try {
+            $datosProfesor = Profesor::find($profesorId);
+            echo json_encode(['response' => $datosProfesor]);
+        } catch (Exception $e) {
+            echo json_encode(['response' => $e->getMessage()]);
+        }
     }
 
     public function edit(Profesor $profesor)

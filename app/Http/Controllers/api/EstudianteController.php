@@ -61,9 +61,14 @@ class EstudianteController extends Controller
         }
     }
 
-    public function show(Estudiante $estudiante)
+    public function show($estudianteId)
     {
-        //
+        try {
+            $datosEstudiante = Estudiante::find($estudianteId);
+            echo json_encode(['response' => $datosEstudiante]);
+        } catch (Exception $e) {
+            echo json_encode(['response' => $e->getMessage()]);
+        }
     }
 
     public function edit(Estudiante $estudiante)
@@ -78,7 +83,7 @@ class EstudianteController extends Controller
             $estudiante = Estudiante::find($idEstudiante);
 
             if (!DB::table('estudiante')->where('id', '<>', $idEstudiante)->where('documento', $nuevaInfoEstudiante['documento'])->exists()) {
-                if (!DB::table('estudiante')->where('id', '<>', $idEstudiante)->where('email', $nuevaInfoEstudiante['email'])->orWhere('documento', $nuevaInfoEstudiante['documento'])->exists()) {
+                if (!DB::table('estudiante')->where('id', '<>', $idEstudiante)->where('email', $nuevaInfoEstudiante['email'])->exists()) {
                     $estudiante->documento = $nuevaInfoEstudiante['documento'];
                     $estudiante->nombres = $nuevaInfoEstudiante['nombres'];
                     $estudiante->telefono = $nuevaInfoEstudiante['telefono'];

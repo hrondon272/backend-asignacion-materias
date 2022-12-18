@@ -39,16 +39,21 @@ class AsignaturaController extends Controller
             $asignatura->area = $dataAsignatura['area'];
             $asignatura->obligatoria = $dataAsignatura['obligatoria'];
             $asignatura->created_at = now();
-            $asignatura->save();
-            echo json_encode(['response' => $asignatura]);
+            $insercion = $asignatura->save();
+            echo json_encode(['response' => $insercion]);
         } catch (Exception $e) {
             echo json_encode(['response' => $e->getMessage()]);
         }
     }
 
-    public function show(Asignatura $asignatura)
+    public function show($asignaturaId)
     {
-        //
+        try {
+            $datosAsignatura = Asignatura::find($asignaturaId);
+            echo json_encode(['response' => $datosAsignatura]);
+        } catch (Exception $e) {
+            echo json_encode(['response' => $e->getMessage()]);
+        }
     }
 
     public function edit(Asignatura $asignatura)
@@ -67,8 +72,8 @@ class AsignaturaController extends Controller
             $asignatura->area = $nuevaInfoProfesor['area'];
             $asignatura->obligatoria = $nuevaInfoProfesor['obligatoria'];
             $asignatura->updated_at = now();
-            $asignatura->update();
-            echo json_encode(['response' => $asignatura]);
+            $actualizacion = $asignatura->update();
+            echo json_encode(['response' => $actualizacion]);
         } catch (Exception $e) {
             echo json_encode(['response' => $e->getMessage()]);
         }

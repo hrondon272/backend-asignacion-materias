@@ -29,16 +29,26 @@ Route::get('checkSession', [LoginController::class, 'verifySession']);
 Route::get('login', [LoginController::class, 'index'])->name('login');
 
 // Para la autenticación se utilizó sanctum, por medio de tokens
-Route::middleware(['auth:sanctum'])->group(function () {
+// Route::middleware(['auth:sanctum'])->group(function () {
 
-    // Obtener información
-    Route::resource('estudiante', EstudianteController::class);
-    Route::resource('profesor', ProfesorController::class);
-    Route::resource('asignatura', AsignaturaController::class);
-    Route::post('userLogout', [LoginController::class, 'logout']);
+//     // Obtener información
+//     Route::resource('estudiante', EstudianteController::class);
+//     Route::resource('profesor', ProfesorController::class);
+//     Route::resource('asignatura', AsignaturaController::class);
+//     Route::post('userLogout', [LoginController::class, 'logout']);
 
-    Route::get('asignacion/{id}', [AsignacionController::class, 'index']);
-    Route::post('asignacion/{id}', [AsignacionController::class, 'assign']);
-    Route::put('asignacion/{id}', [AsignacionController::class, 'update']);
-    Route::delete('asignacion/{id}', [AsignacionController::class, 'destroy']);
-});
+//     Route::get('asignacion/{id}', [AsignacionController::class, 'index']);
+//     Route::post('asignacion/{id}', [AsignacionController::class, 'assign']);
+//     Route::put('asignacion/{id}', [AsignacionController::class, 'update']);
+//     Route::delete('asignacion/{id}', [AsignacionController::class, 'destroy']);
+// });
+
+Route::resource('estudiante', EstudianteController::class);
+Route::resource('profesor', ProfesorController::class);
+Route::resource('asignatura', AsignaturaController::class);
+Route::post('userLogout', [LoginController::class, 'logout']);
+
+Route::get('asignacion/{id}', [AsignacionController::class, 'index']);
+Route::post('asignacion/{id}', [AsignacionController::class, 'assign']);
+Route::put('asignacion/{id}', [AsignacionController::class, 'update']);
+Route::delete('asignacion/{id}', [AsignacionController::class, 'destroy']);
